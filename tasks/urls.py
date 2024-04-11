@@ -8,7 +8,9 @@ urlpatterns = [
     path("<int:pk>/delete/", views.TaskDeleteView.as_view(), name="task-delete"),
     path("task-create/", views.TaskCreateView.as_view(), name="task-create"),
     path("<int:pk>/complete/", views.TaskCompleteView.as_view(), name="task-complete"),
-
+    path('comment/edit/<int:pk>/', views.CommentUpdateView.as_view(), name='edit_comment'),
+    path('comment/delete/<int:pk>/', views.CommentDeleteView.as_view(), name='delete_comment'),
+    path('comment/like/<int:pk>/', views.CommentLikeToggle.as_view(), name='comment-like-toggle'),
 ]
 
 app_name = "tasks"
