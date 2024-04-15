@@ -7,6 +7,10 @@ from tasks.mixins import UserIsOwnerMixin
 from tasks.forms import TaskForm, TaskFilterForm, CommentForm
 from django.http import HttpResponseRedirect
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
 
 
 class TaskListView(ListView):
@@ -122,3 +126,22 @@ class CommentLikeToggle(LoginRequiredMixin, View):
         else:
             models.Like.objects.create(comment=comment, user=request.user)
         return HttpResponseRedirect(comment.get_absolute_url())
+
+
+class CustomLoginView(LoginView):
+    template_name = "tasks/login.html"
+    redirect_authenticated_user = True
+
+
+class CustomLogoutView(LogoutView):
+    next_page = "tasks:login"
+
+
+class RegisterView(CreateView):
+    template_name = "tasks/register.html"
+    form_class = UserCreationForm
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect(reverse_lazy("tasks:login"))
